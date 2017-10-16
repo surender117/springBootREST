@@ -1,6 +1,10 @@
 package poc.springboot.test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,32 +18,31 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Assert;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-
-//@RunWith attaches a runner with the test class to initialize the test data
 @RunWith(MockitoJUnitRunner.class)
 public class TestSearchFileController {
-	
-	private static final String[][] String = null;
 
-	//@InjectMocks annotation is used to create and inject the mock object
-	 @InjectMocks
-	 SearchFileController SearchFileController = new  SearchFileController();
+	private static final String[][] String = null;
 	
-	 @Mock
-	 WordSearchInFilesService wordSearchInFilesService ;
-	 
-	 @Test
-	 public void test(){
-		 
-		 String[] stringArray = {"word","foundation","journal"};		 								
-		 when(wordSearchInFilesService.listDirectory("c:\\Backup-31-July-2017", 0,stringArray )).thenReturn(null);
-		 
-		 String wordsToSearch= "word";
-		
-				 Assert.assertEquals(SearchFileController.WordSearchInFiles(wordsToSearch),null);
-				 
-	 }
-	 
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSearchWordsInFile() {
+		WordSearchInFilesService wordSearchInFilesService=new WordSearchInFilesService();
+		String[] stringArray = { "Future", "took" };
+		boolean fileFound=wordSearchInFilesService.searchWordsInFile(new File("E:\\javafiles\\FileScanner.java").toPath(),	stringArray);
+        assertTrue(fileFound);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSearchWordsInDirectory() throws IOException {
+		WordSearchInFilesService wordSearchInFilesService=new WordSearchInFilesService();
+		String[] stringArray = { "Future", "took" };
+		List<Path> filesFound=wordSearchInFilesService.searchWordsInPath("E:\\files",stringArray);
+		assertEquals(2, filesFound.size());
+	
+	}
 }
